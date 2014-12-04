@@ -1,4 +1,5 @@
 <?php
+/*
 $metadata['https://dubdevdc.dubdev.com/adfs/services/trust'] = array (
   'entityid' => 'https://dubdevdc.dubdev.com/adfs/services/trust',
   'sign.logout' => TRUE,
@@ -61,3 +62,4 @@ $metadata['https://dubdevdc.dubdev.com/adfs/services/trust'] = array (
   ),
   'saml20.sign.assertion' => true,
 );
+*/

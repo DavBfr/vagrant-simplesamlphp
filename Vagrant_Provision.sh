@@ -30,10 +30,14 @@ git clone https://github.com/simplesamlphp/simplesamlphp.git
 cd /var/simplesamlphp
 mkdir -p config && cp -r config-templates/* config/
 mkdir -p metadata && cp -r metadata-templates/* metadata/
-cp /vagrant/etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf
-cp /vagrant/etc/simplesamlphp/config/config.php /var/simplesamlphp/config/config.php
-cp /vagrant/etc/simplesamlphp/config/authsources.php /var/simplesamlphp/config/authsources.php
-cp /vagrant/etc/simplesamlphp/metadata/saml20-idp-remote.php /var/simplesamlphp/metadata/saml20-idp-remote.php
+ln -sf /vagrant/etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+for file in /vagrant/etc/simplesamlphp/config/*; do
+	ln -sf $file /var/simplesamlphp/config/$(basename $file)
+done
+for file in /vagrant/etc/simplesamlphp/metadata/*; do
+	ln -sf $file /var/simplesamlphp/metadata/$(basename $file)
+done
+touch /var/simplesamlphp/modules/exampleauth/enable
 
 ####################
 # SSL
@@ -53,3 +57,13 @@ curl -sS https://getcomposer.org/installer | php
 sudo php composer.phar install
 
 /etc/init.d/apache2 restart
+
+echo ""
+echo "==============================="
+echo "use this url as idp:"
+echo "   http://<host ip>:50080/simplesaml/saml2/idp/SSOService.php?spentityid=ovd"
+openssl x509 -noout -fingerprint -in /var/simplesamlphp/cert/saml.crt
+echo "modify etc/simplesamlphp/metadata/saml20-sp-remote.php with the right ip address:"
+echo "   'AssertionConsumerService' => 'http://<web access>/ovd/auth/saml2/acs.php'"
+echo "==============================="
+echo ""
